@@ -15,12 +15,14 @@ pipeline {
             steps {
                 echo ">>> Setting up the environment..."
                 echo ">>> GIT_REPO: " + params.gitRepoUrl
-                echo ">>> GIT_BRANCH: " + params.gitBranch
-                echo ">>> Temporary folder: " + $TMP_FOLDER
+                echo ">>> GIT_BRANCH: " + params.branchName
+                echo ">>> Temporary folder: " + ${env.TMP_FOLDER}
                 echo ">>> " + $PWD
 
-                def GIT_REPO_URL = params.gitRepoUrl
-                def GIT_BRANCH = params.gitBranch
+                script {
+                    env.GIT_REPO = params.gitRepoUrl
+                    env.GIT_BRANCH = params.branchName
+                }
             }
         }
 
@@ -28,9 +30,9 @@ pipeline {
             steps {
                 echo ">>> Checking out the source..."
                 sh """
-                    mkdir -p $TMP_FOLDER && cd $TMP_FOLDER
-                    git clone ${GIT_REPO_URL} && cd `basename ${GIT_REPO_URL} | sed 's/.git//'`
-                    git checkout ${GIT_BRANCH}
+                    mkdir -p ${env.TMP_FOLDER} && cd ${env.TMP_FOLDER}
+                    git clone ${env.GIT_REPO_URL} && cd `basename ${env.GIT_REPO_URL} | sed 's/.git//'`
+                    git checkout ${env.GIT_BRANCH}
                 """
             }
         }
@@ -47,7 +49,7 @@ pipeline {
                 echo ">>> Cleaning up temporary folders..."
                 sh """
                     cd /var/tmp
-                    rm $TMP_FOLDER -R
+                    rm ${env.TMP_FOLDER} -R
                 """
             }
         }
