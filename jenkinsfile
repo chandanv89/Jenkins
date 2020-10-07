@@ -6,6 +6,7 @@ pipeline {
 	}
 
     environment {
+        PWD = "`pwd`"
         TMP_FOLDER = "/var/tmp/jenkins/build-`date +%s%N`"
         GIT_REPO_URL = "params.gitRepoUrl"
         GIT_BRANCH = "params.branchName"
@@ -18,7 +19,7 @@ pipeline {
                 echo ">>> GIT_REPO: params.gitRepoUrl"
                 echo ">>> GIT_BRANCH: {$GIT_BRANCH}"
                 echo ">>> Temporary folder: {$TMP_FOLDER}"
-                echo `pwd`
+                echo ">>> ${PWD}"
             }
         }
 
