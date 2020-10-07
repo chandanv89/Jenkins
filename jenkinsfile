@@ -9,13 +9,8 @@ pipeline {
         stage ('SetupEnvironment') {
             steps {
                 echo ">>> Setting up the environment..."
-                echo ">>> GIT_REPO: " + params.gitRepoUrl
-                echo ">>> GIT_BRANCH: " + params.branchName
-
-                script {
-                    env.GIT_REPO = params.gitRepoUrl
-                    env.GIT_BRANCH = params.branchName
-                }
+                echo ">>> GIT_REPO: " + ${params.gitRepoUrl}
+                echo ">>> GIT_BRANCH: " + ${params.branchName}
             }
         }
 
@@ -23,8 +18,8 @@ pipeline {
             steps {
                 echo ">>> Checking out the source..."
                 sh """
-                    git clone ${env.GIT_REPO_URL} && cd `basename ${env.GIT_REPO_URL} | sed 's/.git//'`
-                    git checkout ${env.GIT_BRANCH}
+                    git clone ${params.gitRepoUrl} && cd `basename ${params.gitRepoUrl} | sed 's/.git//'`
+                    git checkout ${params.branchName}
                 """
             }
         }
