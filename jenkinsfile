@@ -15,9 +15,10 @@ pipeline {
         stage ('SetupEnvironment') {
             steps {
                 echo ">>> Setting up the environment..."
-                echo ">>> GIT_REPO: {$GIT_REPO_URL}"
+                echo ">>> GIT_REPO: params.gitRepoUrl"
                 echo ">>> GIT_BRANCH: {$GIT_BRANCH}"
                 echo ">>> Temporary folder: {$TMP_FOLDER}"
+                echo `pwd`
             }
         }
 
