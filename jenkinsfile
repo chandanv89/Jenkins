@@ -16,7 +16,6 @@ pipeline {
                 script {
                     env.GIT_REPO = params.gitRepoUrl
                     env.GIT_BRANCH = params.branchName
-                    env.TMP_FOLDER = $WORKSPACE_TMP
                 }
             }
         }
@@ -25,7 +24,6 @@ pipeline {
             steps {
                 echo ">>> Checking out the source..."
                 sh """
-                    mkdir -p ${env.TMP_FOLDER} && cd ${env.TMP_FOLDER}
                     git clone ${env.GIT_REPO_URL} && cd `basename ${env.GIT_REPO_URL} | sed 's/.git//'`
                     git checkout ${env.GIT_BRANCH}
                 """
@@ -42,10 +40,6 @@ pipeline {
         stage('Cleanup') {
             steps {
                 echo ">>> Cleaning up temporary folders..."
-                sh """
-                    cd /var/tmp
-                    rm ${env.TMP_FOLDER} -R
-                """
             }
         }
     }
