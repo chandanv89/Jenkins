@@ -5,23 +5,18 @@ pipeline {
 		ansiColor('gnome-terminal')
 	}
 
-    environment {
-        PWD = sh 'pwd'
-        TMP_FOLDER = "/var/tmp/jenkins/build-`date +%s%N`"
-    }
-
     stages {
         stage ('SetupEnvironment') {
             steps {
                 echo ">>> Setting up the environment..."
                 echo ">>> GIT_REPO: " + params.gitRepoUrl
                 echo ">>> GIT_BRANCH: " + params.branchName
-                echo ">>> Temporary folder: " + ${env.TMP_FOLDER}
-                echo ">>> " + $PWD
+                echo ">>> Temporary folder: " + $WORKSPACE_TMP
 
                 script {
                     env.GIT_REPO = params.gitRepoUrl
                     env.GIT_BRANCH = params.branchName
+                    env.TMP_FOLDER = $WORKSPACE_TMP
                 }
             }
         }
