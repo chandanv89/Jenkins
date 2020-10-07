@@ -6,14 +6,18 @@ pipeline {
 	}
 
     environment {
-        GIT_BRANCH=params.branchName
+        TMP_FOLDER = "/var/tmp/jenkins/build-`date +%s%N`"
+        GIT_REPO_URL = "params.gitRepoUrl"
+        GIT_BRANCH = "params.branchName"
     }
 
     stages {
         stage ('SetupEnvironment') {
             steps {
                 echo ">>> Setting up the environment..."
+                echo ">>> GIT_REPO: {$GIT_REPO_URL}"
                 echo ">>> GIT_BRANCH: {$GIT_BRANCH}"
+                echo ">>> Temporary folder: {$TMP_FOLDER}"
             }
         }
 
@@ -21,7 +25,8 @@ pipeline {
             steps {
                 echo ">>> Checking out the source..."
                 sh """
-                    git fetch -v
+                    mkdir -p ${TMP_FOLDER} && cd ${TMP_FOLDER}
+                    git clone ${GIT_REPO_URL} && cd `basename ${GIT_REPO_URL} | sed 's/.git//'`
                     git checkout ${GIT_BRANCH}
                 """
             }
@@ -34,5 +39,14 @@ pipeline {
             }
         }
 
+        stage('Cleanup') {
+            steps {
+                echo ">>> Cleaning up temporary folders..."
+                sh """
+                    cd /var/tmp
+                    rm ${TMP_FOLDER} -R
+                """
+            }
+        }
     }
 }
