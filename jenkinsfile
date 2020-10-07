@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+
+	options {
+		ansiColor('gnome-terminal')
+	}
+
+    environment {
+        GIT_BRANCH=params.branchName
+    }
+
+    stages {
+        stage ('SetupEnvironment') {
+            steps {
+                echo ">>> Setting up the environment..."
+                echo ">>> GIT_BRANCH: {$GIT_BRANCH}"
+            }
+        }
+
+        stage ('Checkout') {
+            steps {
+                echo ">>> Checking out the source..."
+                sh """
+                    git fetch -v
+                    git checkout ${GIT_BRANCH}
+                """
+            }
+        }
+
+        stage ('Build') {
+            steps {
+                echo ">>> Building... "
+                sh "mvn clean compile test package install"
+            }
+        }
+
+    }
+}
