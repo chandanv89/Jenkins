@@ -27,7 +27,7 @@ pipeline {
         stage ('Build') {
             steps {
                 echo ">>> Building... "
-                sh "mvn clean compile test package install"
+                sh "cd `basename ${params.gitRepoUrl} | sed 's/.git//'` && mvn clean compile test package install"
             }
         }
 
